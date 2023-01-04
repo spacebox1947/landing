@@ -7,4 +7,18 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'landing';
+
+  validCategory(category: string) {
+    if (category ===
+      'general' || 'technology' || 
+      'science' || 'health' || 'buisiness' ||
+      'entertainment' || 'sports') {
+        return category
+    } else {
+      return 'general';
+    }
+  }
+
 }
+
+

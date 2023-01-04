@@ -7,3 +7,11 @@
         target="_blank"
     >{{ article.title | trimNewsOutletName: article.source.name }}</a>
 </div>
+
+<app-paginator 
+    [numberOfPages$]="numberOfPages$"
+    [numberOfPages]="numberOfPages"
+    (newPageNumber)="newPageNumber = ($event); updatePageView(newPageNumber)"
+    ></app-paginator>
+
+<h2>{{ newPageNumber }}</h2>
