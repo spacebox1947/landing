@@ -1,0 +1,31 @@
+<div *ngIf="selectType === 'category'">
+    <label>{{label}}</label>
+    <select 
+        class="form-select form-select-lg"
+        aria-label="select a category of news"
+        #newsCategory
+        (change)="selectCategory(newsCategory.value)">
+        <option
+            *ngFor="let category of newsOptions.getCategories()"
+            (value)="category"
+        >
+            {{ category | titlecase }}
+        </option>
+    </select>
+</div>
+
+<div *ngIf="selectType === 'country'">
+    <label>{{label}}</label>
+    <select 
+        class="form-select form-select-lg"
+        aria-label="select a country"
+        #newsCountry
+        (change)="selectCountry(newsCountry.value)">
+        <option
+            *ngFor="let country of newsOptions.getCountries()"
+            (value)="country"
+        >
+            {{ country | uppercase }}
+        </option>
+    </select>
+</div>

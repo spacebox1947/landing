@@ -9,7 +9,11 @@ import { WeatherService } from '../weather.service';
 })
 export class ForecastComponent implements OnInit {
   //forecastData: any[] = [];
-  forecast$!: Observable<{ dateString: string; temp: number; }[]>;
+  forecast$!: Observable<{
+    dateString: string;
+    temp: number;
+    humidity: number;
+  }[]>;
 
   constructor(private weatherService: WeatherService) { 
     this.forecast$ = weatherService.getForecast();

@@ -44,15 +44,31 @@ export class NewsApiService {
 
   // Subject/Observable for what page of articles to get and how many are available
   //private pagesInput: Subject<number>;
-  private pagesInput: Subject<NewsApiRequest>
-  pagesOutput: Observable<Article[]>;
-  numberOfPages: Subject<number>;
+  private pagesInput!: Subject<NewsApiRequest>
+  pagesOutput!: Observable<Article[]>;
+  numberOfPages!: Subject<number>;
 
   constructor(
     private http: HttpClient,
     private notificationsService: NotificationsService) { 
-    this.numberOfPages = new Subject();
+      this.initialize();
+  }
 
+  getPage(page: number) {
+    //this.pagesInput.next(page);
+  }
+
+  getPageAndCategory(request: NewsApiRequest) {
+    console.log(request);
+    this.pagesInput.next(request);
+  }
+
+  setCountry(country: string) {
+    this.country = country;
+  }
+
+  initialize() {
+    this.numberOfPages = new Subject();
     this.pagesInput = new Subject();
     this.pagesOutput = this.pagesInput.pipe(
       retry(1),
@@ -85,14 +101,5 @@ export class NewsApiService {
       }),
       map((response) => response.articles)
     );
-  }
-
-  getPage(page: number) {
-    //this.pagesInput.next(page);
-  }
-
-  getPageAndCategory(request: NewsApiRequest) {
-    console.log(request);
-    this.pagesInput.next(request);
   }
 }

@@ -1,18 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { DropdownComponent } from './dropdown/dropdown.component';
 
 
 
 @NgModule({
   declarations: [
-    PaginatorComponent
+    PaginatorComponent,
+    DropdownComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    PaginatorComponent
+    PaginatorComponent,
+    DropdownComponent
   ]
 })
 export class SharedModule { }
