@@ -22,10 +22,10 @@
         #newsCountry
         (change)="selectCountry(newsCountry.value)">
         <option
-            *ngFor="let country of newsOptions.getCountries()"
+            *ngFor="let country of newsOptions.getCountryFullNames()"
             (value)="country"
         >
-            {{ country | uppercase }}
+            {{ country | titlecase }}
         </option>
     </select>
 </div>

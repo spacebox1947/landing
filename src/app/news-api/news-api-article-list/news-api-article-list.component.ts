@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { NewsApiService } from '../news-api.service';
 import { Article } from '../news-api.service';
+import { NewsQueryOptions } from '../news-query-options';
 
 @Component({
   selector: 'app-news-api-article-list',
@@ -13,17 +14,18 @@ export class NewsApiArticleListComponent implements OnInit {
   numberOfPages$!: Observable<number>;
   numberOfPages: number = 0;
   @Input() newPageNumber: number = 0;
-  // modifiying defaul category pulls a new header from news-api-header-pipe
   category: string = 'general'
+  newsOptions = new NewsQueryOptions;
   country: string = 'us';
 
-  constructor(private newsApiService: NewsApiService) {
-
+  constructor(
+    private newsApiService: NewsApiService) {
+      this.country = this.newsOptions.defaultCountryIso;
     // gets value immediately, but must pass observable to paginator
     this.numberOfPages$ = this.newsApiService.numberOfPages;
 
     this.newsApiService.pagesOutput.subscribe((articles) => {
-      console.log('Initializing newsApi');
+      //console.log('Initializing newsApi');
       this.articles = articles;
       tap(articles => console.log(articles));
     });
