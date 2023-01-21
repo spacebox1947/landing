@@ -9,7 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 @NgModule({
   declarations: [
     NewsApiArticleListComponent,
-    TrimNewsOutletNamePipe
+    TrimNewsOutletNamePipe,
   ],
   imports: [
     CommonModule,

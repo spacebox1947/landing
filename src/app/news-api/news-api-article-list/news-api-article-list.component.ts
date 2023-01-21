@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { NewsApiService } from '../news-api.service';
 import { Article } from '../news-api.service';
-import { NewsApiRequest } from '../news-api.service';
+import { NewsQueryOptions } from '../news-query-options';
 
 @Component({
   selector: 'app-news-api-article-list',
@@ -14,14 +14,18 @@ export class NewsApiArticleListComponent implements OnInit {
   numberOfPages$!: Observable<number>;
   numberOfPages: number = 0;
   @Input() newPageNumber: number = 0;
-  @Input() category: string = 'general';
+  category: string = 'general'
+  newsOptions = new NewsQueryOptions;
+  country: string = 'us';
 
-  constructor(private newsApiService: NewsApiService) {
+  constructor(
+    private newsApiService: NewsApiService) {
+      this.country = this.newsOptions.defaultCountryIso;
     // gets value immediately, but must pass observable to paginator
     this.numberOfPages$ = this.newsApiService.numberOfPages;
 
     this.newsApiService.pagesOutput.subscribe((articles) => {
-      console.log('Initializing newsApi');
+      //console.log('Initializing newsApi');
       this.articles = articles;
       tap(articles => console.log(articles));
     });
@@ -31,41 +35,22 @@ export class NewsApiArticleListComponent implements OnInit {
     this.newsApiService.numberOfPages.subscribe((numberOfPages) => {
       this.numberOfPages = numberOfPages;
     })
-
-    // this will accept a event$ from paginator to change pages
-    //this.newsApiService.getPage(1);
-    /* let newsCategory;
-    try {
-      this.assertValidCategory(this.category);
-      newsCategory = this.category;
-      this.newsApiService.getPageAndCategory({category: newsCategory, page: 1});
-    } catch (err) {
-      console.log(err);
-    } */
     this.newsApiService.getPageAndCategory({category: this.category, page: 1});
   }
 
   ngOnInit(): void { }
 
   updatePageView(page: any) {
-    //console.log(page);
-    //this.newsApiService.getPage(page);
     this.newsApiService.getPageAndCategory({category: this.category, page});
   }
 
-  assertValidCategory(category: string) {
-    switch(category) {
-      case 'general':
-      case 'entertainment':
-      case 'technology':
-      case 'buisiness':
-      case 'sports':
-      case 'health':
-      case 'science':
-        return true;
-      default:
-        throw new Error(`Invalid Category value: ${category}`);
-    }
+  updateCategory(category: string) {
+    this.newsApiService.getPageAndCategory({category, page: 1});
+  }
+
+  updateCountry(country: string) {
+    this.newsApiService.setCountry(country);
+    this.newsApiService.getPageAndCategory({category: this.category, page: 1});
   }
 
 }

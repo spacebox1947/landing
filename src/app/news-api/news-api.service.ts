@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject, throwError } from 'rxjs';
 import { tap, map, switchMap, catchError, retry } from 'rxjs';
 import { NotificationsService } from '../notifications/notifications.service';
+import { NewsQueryOptions } from './news-query-options';
 
 interface NewsApiResponse {
   //status: string
@@ -40,19 +41,32 @@ export class NewsApiService {
   private url = 'https://newsapi.org/v2/top-headlines';
   private pageSize = 10;
   private apiKey = '48f7e48e35d84066a5b503bb87cadae3';
-  private country = 'us';
+  newsOptions = new NewsQueryOptions;
+  country: string;
 
   // Subject/Observable for what page of articles to get and how many are available
-  //private pagesInput: Subject<number>;
-  private pagesInput: Subject<NewsApiRequest>
-  pagesOutput: Observable<Article[]>;
-  numberOfPages: Subject<number>;
+  private pagesInput!: Subject<NewsApiRequest>
+  pagesOutput!: Observable<Article[]>;
+  numberOfPages!: Subject<number>;
 
   constructor(
     private http: HttpClient,
     private notificationsService: NotificationsService) { 
-    this.numberOfPages = new Subject();
+      this.country = this.newsOptions.defaultCountryIso;
+      this.initialize();
+  }
 
+  getPageAndCategory(request: NewsApiRequest) {
+    //console.log(request);
+    this.pagesInput.next(request);
+  }
+
+  setCountry(country: string) {
+    this.country = country;
+  }
+
+  initialize() {
+    this.numberOfPages = new Subject();
     this.pagesInput = new Subject();
     this.pagesOutput = this.pagesInput.pipe(
       retry(1),
@@ -64,7 +78,6 @@ export class NewsApiService {
           //.set('page', String(page))
           .set('page', String(request.page))
           .set('pageSize', String(this.pageSize))
-          //.set('category', 'general')
           .set('category', request.category)
           .set('apiKey', this.apiKey);
       }),
@@ -72,12 +85,10 @@ export class NewsApiService {
         return this.http.get<NewsApiResponse>(this.url, { params: params });
       }),
       tap((response) => {
-        //console.log(response);
         const totalPages = Math.ceil(response.totalResults / this.pageSize);
         this.numberOfPages.next(totalPages);
         // annoyingly, this vvv fires every time the paginator is used
         this.notificationsService.addSuccess(`Gathered ${this.pageSize} articles out of ${response.totalResults}`);
-        //this.notificationsService.addSuccess(`Gathered ${this.pageSize} articles split over ${totalPages}`);
       }),
       catchError((err) => {
         this.notificationsService.addError(`Error collecting NewsApi News articles: ${err}`);
@@ -85,14 +96,5 @@ export class NewsApiService {
       }),
       map((response) => response.articles)
     );
-  }
-
-  getPage(page: number) {
-    //this.pagesInput.next(page);
-  }
-
-  getPageAndCategory(request: NewsApiRequest) {
-    console.log(request);
-    this.pagesInput.next(request);
   }
 }

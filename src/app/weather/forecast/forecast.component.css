@@ -7,7 +7,7 @@
     display: flex;
 }
 
-.temp, .day {
+.temp, .day .humidity {
     margin: 0;
     text-align: center;
 
@@ -19,4 +19,8 @@
 
 .day {
     font-style: italic;
+}
+
+.humidity {
+    color: blue;
 }

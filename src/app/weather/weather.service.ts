@@ -32,6 +32,33 @@ interface OpenWeatherResponse {
     dt_txt: string;
     main: {
       temp: number;
+      //feels_like: number,
+      //temp_min: number,
+      //temp_max: number,
+      //pressure: number,
+      //sea_level: number,
+      //grnd_level: number,
+      humidity: number, //... maybe useful?
+      //temp_kf: number
+    }
+    weather: {
+      //id: number,
+      //main: string,
+      //description: string,
+      //icon: string
+    }
+    clouds: {
+      //all: number
+    }
+    wind: {
+      //speed: number,
+      //deg: number,
+      //gust: number
+    }
+    visibility: number;
+    pop: number;
+    rain: {
+      //'3h': number
     }
   }[]
 }
@@ -59,10 +86,9 @@ export class WeatherService {
           //set expects (string, string) args
           .set('lat', String(coords.latitude))
           .set('lon', String(coords.longitude))
-          .set('units', 'metric')
+          .set('units', 'imperial')
           .set('appid', this.apiKey)
       }),
-      //tap(params => console.log("Params:" + params.toString())),
       switchMap((params) => 
         /*
         * what error handling could go here?
@@ -79,9 +105,10 @@ export class WeatherService {
         // take the interesting values from filtered objects
         return {
           dateString: value.dt_txt,
-          temp: value.main.temp
+          temp: value.main.temp,
           //temp_min: value.main.temp_min,
           //temp_max: value.main.temp_max
+          humidity: value.main.humidity
         };
       }),
       toArray(),
